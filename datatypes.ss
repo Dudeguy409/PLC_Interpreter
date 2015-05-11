@@ -7,8 +7,7 @@
   (let-exp (assigns (list-of assignment?)) (bodies (list-of exp?)))
   (named-let-exp (name symbol?) (assigns (list-of assignment?)) (bodys (list-of exp?)))
   (let*-exp (assigns (list-of assignment?)) (bodies (list-of exp?)))
-  (letrec-exp (assigns (list-of assignment?)) (bodies (list-of exp?)))
-  ;(letrec-exp (proc-names (list-of symbol?)) (ids (list-of (list-of symbol?))) (bodies (list-of exp?)) (letrec-body exp?))
+  (letrec-exp (proc-names (list-of symbol?)) (ids (list-of (list-of symbol?))) (bodies (list-of (list-of exp?))) (letrec-bodies (list-of exp?)))
   (lambda-exp (syms (list-of symbol?)) (bodies (list-of exp?)))
   (lambda-exp-single (sym symbol?) (bodies (list-of exp?)))
   (lambda-exp-improper (need-syms (list-of symbol?)) (extra-sym symbol?) (bodies (list-of exp?)))
@@ -41,9 +40,10 @@
    (env environment?)
   )
   [recursively-extended-env-record
-      (ids (list-of symbol?))
-      (bodies (list-of exp?))
-      (env environment?)]
+    (proc-names (list-of symbol?))
+    (idss (list-of (list-of symbol?)))
+    (bodies (list-of (list-of exp?)))
+    (env environment?)]
 )
 
 

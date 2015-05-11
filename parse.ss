@@ -188,6 +188,10 @@
   )
 )
 
+
+(define get-lambda-ids (lambda (exp) (cases expression exp [lambda-exp (syms bodies) syms][else (eopl:error 'parse-exp "letrecs can only contain lambda expressions: ~s" exp)] )))
+(define get-lambda-bodies (lambda (exp) (cases expression exp [lambda-exp (syms bodies) bodies][else (eopl:error 'parse-exp "letrecs can only contain lambda expressions: ~s" exp)])))
+
 (define parse-letrec
    (lambda (exp)
     (cond [(null? (cdr exp)) ; let with no variables and body
@@ -200,14 +204,25 @@
 	   (eopl:error 'parse-exp "found an improper list in the argument section of letrec: ~s" exp)
 	  ]
 	  [else ; should be good
-	   (letrec-exp 
-	    (map parse-assignment (let-pairs exp)) 
-	    (map parse-exp (let-bodies exp))
-	   )
+	  	(let 
+	  		(
+	  			[tuples (map parse-assignment (let-pairs exp)) ]
+	  			[letrec-bodies  (map parse-exp (let-bodies exp))]
+	  		) 
+	  		(let  
+	  			(
+	  				[proc-names (map get-tuple-id tuples)][vals (map get-tuple-exp tuples)])  
+	  				(let  ([ids (map get-lambda-ids vals) ][bodies (map get-lambda-bodies vals) ]) 
+	  					(letrec-exp proc-names ids bodies letrec-bodies) 
+	  				) 
+	  		) 
+	  	)
 	  ]
     )
   )
 )
+
+
 
 (define parse-let*
  (lambda (exp)
