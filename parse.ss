@@ -280,6 +280,7 @@
 	   (eopl:error 'parse-exp "found an improper list in the argument section of named let: ~s" exp)
 	  ]
 	  [(named-let-exp ; should be fine
+	  	(cadr exp)
 	    (map parse-assignment (named-let-pairs exp))
 	    (map parse-exp (named-let-bodies exp))
 	   )
