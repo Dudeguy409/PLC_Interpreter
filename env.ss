@@ -9,8 +9,8 @@
     (extended-env-record syms vals env)))
 
 (define extend-env-recursively
-  (lambda (proc-names idss bodies old-env)
-    (recursively-extended-env-record proc-names idss bodies old-env)))
+  (lambda (proc-names vals old-env)
+    (recursively-extended-env-record proc-names vals old-env)))
 
 (define apply-env
   (lambda (env sym succeed fail) ; succeed and fail are procedures applied if the var is or isn't found, respectively.
@@ -23,11 +23,24 @@
 	      (succeed (list-ref vals pos))
 	      (apply-env env sym succeed fail))))
 
-      (recursively-extended-env-record (procnames idss bodies old-env)
+      (recursively-extended-env-record (procnames vals old-env)
         (let ([pos (list-find-position sym procnames)])
-          (if (number? pos)
-            (closure (list-ref idss pos) (list-ref bodies pos) env)
-            (apply-env old-env sym succeed fail))))
+          (if 
+            (number? pos)
+              (let  
+                (
+                  [rec-exp (list-ref vals pos)]
+                ) 
+                  (cases expression rec-exp 
+                    [lambda-exp (syms bodies) (closure syms bodies env)]
+                    [lambda-exp-improper (needed-syms extra-sym bodies) (closure-improper needed-syms extra-sym bodies env) ]
+                    [else (eopl:error 'apply-env "tried to store something besides a lambda in letrec:~s" rec-exp)]
+                  ) 
+              )
+              (apply-env old-env sym succeed fail)
+          )
+        )
+      )
     )
   )
 )

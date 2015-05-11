@@ -28,7 +28,7 @@
 	    ; [letrec-exp
      ;        (assignments letrec-body) (evaluate-lr-return-last letrec-body (extend-env-recursively (map get-tuple-id assignments) (map get-tuple-exp assignments) env))]
        [letrec-exp
-            (proc-names idss bodies letrec-body) (eval-lr-return-last letrec-body (extend-env-recursively proc-names idss bodies env))]
+            (proc-names vals letrec-body) (eval-lr-return-last letrec-body (extend-env-recursively proc-names vals env))]
 
 	   [lambda-exp (syms bodies)
 		       (eval-lambda syms bodies env)

@@ -17,8 +17,9 @@
 	   				(syntax-expand
 	   					(letrec-exp
 	   						(list name)
-	   						(list ids)
-	   						(list bodies)
+	   						(list (lambda-exp ids bodies))
+	   						; (list ids)
+	   						; (list bodies)
 	   						(list (app-exp (cons (var-exp name) args)))
 	   					)
 	   				)
@@ -57,7 +58,7 @@
 	   [while-exp (test-exp bodies)
 		  (syntax-expand-while test-exp bodies)
 	   ]
-	   [letrec-exp (proc-names ids bodies letrec-body) (syntax-expand-letrec proc-names ids bodies letrec-body)
+	   [letrec-exp (proc-names vals letrec-bodies) (syntax-expand-letrec proc-names vals letrec-bodies)
 
 	   ]
 	   [else exp]
@@ -65,8 +66,8 @@
   )
 )
 
-(define (syntax-expand-letrec proc-names ids bodies letrec-body)
-	(letrec-exp proc-names ids (map syntax-expand bodies) (map syntax-expand letrec-body)))
+(define (syntax-expand-letrec proc-names vals letrec-bodies)
+	(letrec-exp proc-names (map syntax-expand vals) (map syntax-expand letrec-bodies)))
 
 (define syntax-expand-app
   (lambda (exps)

@@ -204,18 +204,17 @@
 	   (eopl:error 'parse-exp "found an improper list in the argument section of letrec: ~s" exp)
 	  ]
 	  [else ; should be good
-	  	(let 
+	  	(let
 	  		(
 	  			[tuples (map parse-assignment (let-pairs exp)) ]
 	  			[letrec-bodies  (map parse-exp (let-bodies exp))]
-	  		) 
-	  		(let  
+	  		)
+	  		(let
 	  			(
-	  				[proc-names (map get-tuple-id tuples)][vals (map get-tuple-exp tuples)])  
-	  				(let  ([ids (map get-lambda-ids vals) ][bodies (map get-lambda-bodies vals) ]) 
-	  					(letrec-exp proc-names ids bodies letrec-bodies) 
-	  				) 
-	  		) 
+	  				[proc-names (map get-tuple-id tuples)][vals (map get-tuple-exp tuples)]
+	  			) 
+	  				(letrec-exp proc-names vals letrec-bodies)	 
+	  		)
 	  	)
 	  ]
     )
