@@ -8,6 +8,22 @@
 	   [lambda-exp (syms bodies)
 		       (syntax-expand-lambda syms bodies)
 	   ]
+	   [named-let-exp (name assigns bodies)
+	   		(let
+	   			(
+	   				[args (map get-tuple-exp assigns)]
+	   				[ids (map get-tuple-id  assigns)]
+	   			)
+	   				(syntax-expand
+	   					(letrec-exp
+	   						(list name)
+	   						(list ids)
+	   						(list bodies)
+	   						(list (app-exp (cons (var-exp name) args)))
+	   					)
+	   				)
+	   		)
+	   ]
 	   [lambda-exp-single (sym bodies)
 			      (syntax-expand-lambda-single sym bodies)
 	   ]
