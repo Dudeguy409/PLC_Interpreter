@@ -57,10 +57,16 @@
 	   [while-exp (test-exp bodies)
 		  (syntax-expand-while test-exp bodies)
 	   ]
+	   [letrec-exp (proc-names ids bodies letrec-body) (syntax-expand-letrec proc-names ids bodies letrec-body)
+
+	   ]
 	   [else exp]
      )
   )
 )
+
+(define (syntax-expand-letrec proc-names ids bodies letrec-body)
+	(letrec-exp proc-names ids (map syntax-expand bodies) (map syntax-expand letrec-body)))
 
 (define syntax-expand-app
   (lambda (exps)
