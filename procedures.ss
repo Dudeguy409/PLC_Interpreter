@@ -73,7 +73,7 @@
       car  cdr caar cddr cadr cdar caaar cdddr caadr cddar cadar cdadr cdaar caddr
       list null? assq eq? eqv? equal? atom? length list->vector list? pair? procedure? 
       vector->list vector make-vector vector-ref vector? number? symbol? set-car! 
-      set-cdr! vector-set! display newline map list-tail apply void quotient remainder odd? even?
+      set-cdr! vector-set! display newline map list-tail apply void quotient remainder odd? even? append
    )
 )
 
@@ -112,7 +112,7 @@
     [(cdadr) (apply cdadr args)] 
     [(cdaar) (apply cdaar args)] 
     [(caddr) (apply caddr args)]
-
+    [(append) (apply (lambda ls (append (1st args) ls)) (2nd args))]
     [(odd?) (odd? (1st args))]
     [(even?) (even? (1st args))]
     [(list-tail) (list-tail (1st args) (2nd args))]

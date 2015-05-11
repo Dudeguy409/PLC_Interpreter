@@ -13,12 +13,12 @@
 	   [let-exp (assignments bodies)
 		    (eval-let assignments bodies env)
 	   ]
-	   [named-let-exp (name assignments bodys)
-			  (append (list 'let name)
-				  (list (map unparse-assignments assignments))
-				  (map unparse-exp bodys)
-			  )
-	   ]
+	   ; [named-let-exp (name assignments bodys)
+			 ;  (append (list 'let name)
+				;   (list (map unparse-assignments assignments))
+				;   (map unparse-exp bodys)
+			 ;  )
+	   ; ]
 	   ;[letrec-exp (assignments bodys)
 		  ;     (append (list 'letrec) 
 			 ;      (list (map unparse-assignments assignments))
@@ -27,7 +27,7 @@
 	   ;]
 	    ; [letrec-exp
      ;        (assignments letrec-body) (evaluate-lr-return-last letrec-body (extend-env-recursively (map get-tuple-id assignments) (map get-tuple-exp assignments) env))]
-        [letrec-exp
+       [letrec-exp
             (proc-names idss bodies letrec-body) (eval-lr-return-last letrec-body (extend-env-recursively proc-names idss bodies env))]
 
 	   [lambda-exp (syms bodies)
@@ -61,15 +61,6 @@
   )
 )
 
-(define eval-bodies
-  (lambda (bodies env)
-    (car (reverse (my-loop (lambda (x) (eval-exp x env)) bodies))))) ; I have to write a loop because map isnt guaranteed ot be ordered.
-
-(define (my-loop proc bodies)
-  (if (null? bodies)
-    '()
-    (let ([val (proc (car bodies))])
-      (cons val (my-loop proc (cdr bodies))))))
 
 (define eval-while
   (lambda (test-exp bodies env)
