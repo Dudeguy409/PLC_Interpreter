@@ -1,3 +1,6 @@
+;Ruying Chen
+;Andrew Davidson
+;Noah Miller
 
 ;; Parsed expression datatypes
 

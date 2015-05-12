@@ -1,3 +1,7 @@
+;Ruying Chen
+;Andrew Davidson
+;Noah Miller
+
 ; Environment definitions for CSSE 304 Scheme interpreter.  Based on EoPL section 2.3
 
 (define empty-env

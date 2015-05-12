@@ -1,3 +1,7 @@
+;Ruying Chen
+;Andrew Davidson
+;Noah Miller
+
 (define syntax-expand
   (lambda (exp)
     (cases expression exp

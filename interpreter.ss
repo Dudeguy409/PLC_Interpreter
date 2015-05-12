@@ -1,3 +1,7 @@
+;Ruying Chen
+;Andrew Davidson
+;Noah Miller
+
 (define replace-procs
   (lambda (ls)
     (cond [(proc-val? ls) '<interpreter_procedure>]

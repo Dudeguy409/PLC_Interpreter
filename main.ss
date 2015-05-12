@@ -1,3 +1,7 @@
+;Ruying Chen
+;Andrew Davidson
+;Noah Miller
+
 ; evaluator for simple expressions.
 ; Possible starting point for first interpreter assignment.
 ;                  

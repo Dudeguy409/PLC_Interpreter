@@ -1,3 +1,7 @@
+;Ruying Chen
+;Andrew Davidson
+;Noah Miller
+
 (define parse-exp         
   (lambda (datum)
     (cond
