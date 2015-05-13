@@ -16,14 +16,45 @@
   (lambda (proc-names vals old-env)
     (recursively-extended-env-record proc-names vals old-env)))
 
+
+
+  (define deref 
+    (lambda 
+      (ref) 
+        (cases reference ref  
+          [norm-ref (v i)  (vector-ref v i) ] 
+        )  
+    ) 
+  )
+
+  (define set-ref! 
+    (lambda 
+      (ref val) 
+      (cases reference ref  
+        [norm-ref (v i)  (vector-set! v i val) ] 
+      ) 
+    ) 
+  )
+
+  ; (define apply-env 
+  ; (lambda 
+  ;   (env sym succeed fail) 
+  ;     (deref 
+  ;       (apply-env-ref env sym)
+  ;     )
+  ; )
+
+  ; (define apply-env-ref (lambda (env sym)  () ) )
+
 (define apply-env
   (lambda (env sym succeed fail) ; succeed and fail are procedures applied if the var is or isn't found, respectively.
     (cases environment env
       (empty-env-record () (fail sym))
-
+;TODO add vectors to all environments and then....
       (extended-env-record (syms vals env)
 	     (let ((pos (list-find-position sym syms)))
       	  (if (number? pos)
+            ;call vector-ref or deref???
 	      (succeed (list-ref vals pos))
 	      (apply-env env sym succeed fail))))
 

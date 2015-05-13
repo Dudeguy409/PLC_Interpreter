@@ -67,5 +67,7 @@
   )
 )
 
+(define-datatype reference reference? [norm-ref (v vector?) (i number?) ] )
+
 (define get-tuple-id (lambda (tup) (cases assignment tup [assign (id exp) id])))
 (define get-tuple-exp (lambda (tup) (cases assignment tup [assign (id exp) exp])))
