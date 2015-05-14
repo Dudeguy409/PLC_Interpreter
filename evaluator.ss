@@ -50,9 +50,13 @@
 		      (eval-while test-exp bodies env)
 	   ]
 	   [set!-exp (sym exp)
-		     (list 'set!
-			   sym
-			   (unparse-exp exp)
+	   		(set-ref!
+		     	(apply-env-ref
+		     		env
+			    	sym
+			   		(eopl:error 'eval-exp "The variable you are attempting to reassign is not defined in any local environment.  Are you trying to reassign a value in a global environment with a set-bang?!?! You, sir, are a tool.!  What is your freaking problem!?@#%$@!!!: ~s" exp)
+		     	)
+		     	(eval-exp exp env)
 		     )
 	   ]
 	   [app-exp (exps)

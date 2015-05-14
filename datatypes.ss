@@ -35,16 +35,17 @@
 	 
 ;; environment type definitions
 
+;vector used to have type checks : list-of always?  and list-of exp?
 (define-datatype environment environment?
   (empty-env-record)
   (extended-env-record
    (syms (list-of symbol?))
-   (vals (list-of always?))
+   (v vector?)
    (env environment?)
   )
   [recursively-extended-env-record
     (proc-names (list-of symbol?))
-    (vals (list-of exp?))
+    (v vector?)
     (env environment?)]
 )
 

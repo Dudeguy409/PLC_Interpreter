@@ -10,11 +10,11 @@
 
 (define extend-env
   (lambda (syms vals env)
-    (extended-env-record syms vals env)))
+    (extended-env-record syms (list->vector vals) env)))
 
 (define extend-env-recursively
   (lambda (proc-names vals old-env)
-    (recursively-extended-env-record proc-names vals old-env)))
+    (recursively-extended-env-record proc-names (list->vector vals) old-env)))
 
 
 
@@ -44,27 +44,45 @@
   ;     )
   ; )
 
-  ; (define apply-env-ref (lambda (env sym)  () ) )
+  (define apply-env-ref 
+    (lambda
+      (env sym fail) 
+        (cases environment env 
+          [extended-env-record (syms v old-env)
+            (let
+              (
+                (pos (list-find-position sym syms))
+              )
+                (if 
+                  (number? pos)
+                    (reference v (vector-ref v pos))
+                    (apply-env-ref old-env sym fail)
+                )
+            )
+          ]
+          [else (eopl:error 'apply-env-ref "You tried to use a set! in letrec, tool:~s" sym) ] 
+        ) 
+    ) 
+  )
 
 (define apply-env
   (lambda (env sym succeed fail) ; succeed and fail are procedures applied if the var is or isn't found, respectively.
     (cases environment env
       (empty-env-record () (fail sym))
 ;TODO add vectors to all environments and then....
-      (extended-env-record (syms vals env)
+      (extended-env-record (syms v old-env)
 	     (let ((pos (list-find-position sym syms)))
       	  (if (number? pos)
-            ;call vector-ref or deref???
-	      (succeed (list-ref vals pos))
-	      (apply-env env sym succeed fail))))
+	      (succeed (vector-ref v pos))
+	      (apply-env old-env sym succeed fail))))
 
-      (recursively-extended-env-record (procnames vals old-env)
+      (recursively-extended-env-record (procnames v old-env)
         (let ([pos (list-find-position sym procnames)])
           (if 
             (number? pos)
               (let  
                 (
-                  [rec-exp (list-ref vals pos)]
+                  [rec-exp (vector-ref v pos)]
                 ) 
                   (cases expression rec-exp 
                     [lambda-exp (syms bodies) (closure syms bodies env)]
