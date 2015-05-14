@@ -98,21 +98,37 @@
   )
 )
 
-(define init-env         ; for now, our initial global environment only contains 
-  (extend-env            ; procedure names.  Recall that an environment associates
+(define make-init-env         ; for now, our initial global environment only contains 
+  (lambda () 
+    (extend-env            ; procedure names.  Recall that an environment associates
      *prim-proc-names*   ;  a value (not an expression) with an identifier.
      (map prim-proc      
           *prim-proc-names*
      )
      (empty-env)
+    )
   )
 )
 
-(define global-env init-env)
+(define global-env (make-init-env) )
+
+(define reset-global-env 
+  (lambda 
+    () 
+      (set! global-env (make-init-env))
+  )
+)
 
 (define apply-env-error
   (lambda (id)
     (eopl:error 'apply-env "variable not found in enviroment: ~s" id)
+  )
+)
+; reassign the environment to global-env
+(define extend-global-env
+  (lambda
+    (syms vals)
+      (set! global-env (extend-env syms vars global-env))
   )
 )
 

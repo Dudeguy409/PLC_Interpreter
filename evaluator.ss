@@ -49,7 +49,7 @@
 		    (eval-app exps env)
 	   ]
 	   [define-exp (sym def-exp)
-	   		(define sym (eval-exp def-exp env))
+	   		(extend-global-env (list sym) (list (eval-exp def-exp env) ) )
 	   ]
 	   [else
 	    (eopl:error 'eval-exp "evaluator found unknown datatype: ~s" exp)
