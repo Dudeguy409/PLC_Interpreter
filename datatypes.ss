@@ -22,6 +22,7 @@
   (case-exp (exp exp?) (list-of-tests (list-of (list-of exp?))) (list-of-bodies (list-of (list-of exp?))))
   (while-exp (test-exp exp?) (bodies (list-of exp?)))
   (set!-exp (sym symbol?) (exp exp?))
+  (define-exp (sym symbol?) (exp exp?))
   (app-exp (exps (list-of exp?)))
 )
 

@@ -17,23 +17,9 @@
 	   [let-exp (assignments bodies)
 		    (eval-let assignments bodies env)
 	   ]
-	   ; [named-let-exp (name assignments bodys)
-			 ;  (append (list 'let name)
-				;   (list (map unparse-assignments assignments))
-				;   (map unparse-exp bodys)
-			 ;  )
-	   ; ]
-	   ;[letrec-exp (assignments bodys)
-		  ;     (append (list 'letrec) 
-			 ;      (list (map unparse-assignments assignments))
-			 ;      (map unparse-exp bodys)
-		  ;     )
-	   ;]
-	    ; [letrec-exp
-     ;        (assignments letrec-body) (evaluate-lr-return-last letrec-body (extend-env-recursively (map get-tuple-id assignments) (map get-tuple-exp assignments) env))]
        [letrec-exp
-            (proc-names vals letrec-body) (eval-lr-return-last letrec-body (extend-env-recursively proc-names vals env))]
-
+            (proc-names vals letrec-body) (eval-lr-return-last letrec-body (extend-env-recursively proc-names vals env))
+       ]
 	   [lambda-exp (syms bodies)
 		       (eval-lambda syms bodies env)
 	   ]
@@ -61,6 +47,9 @@
 	   ]
 	   [app-exp (exps)
 		    (eval-app exps env)
+	   ]
+	   [define-exp (sym def-exp)
+	   		(define sym (eval-exp def-exp env))
 	   ]
 	   [else
 	    (eopl:error 'eval-exp "evaluator found unknown datatype: ~s" exp)

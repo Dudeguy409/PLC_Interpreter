@@ -18,6 +18,16 @@
        [(let*-exp? datum) ; let*
 	(parse-let* datum)
        ]
+       [(eqv? (car datum) 'define)
+			(if
+				(not (equal? 3  (length datum)) ) 
+					(eopl:error 'parse-exp "define has the wrong number of parameters" datum) 
+					(define-exp
+						(cadr datum)
+						(parse-exp (cddr datum))
+					)
+			)
+       ]
        [(letrec-exp? datum) ; letrec
 	(parse-letrec datum)
        ]
