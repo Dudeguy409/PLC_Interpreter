@@ -152,7 +152,7 @@
 (define syntax-expand-let
   (lambda (assignments bodies)
      (let ([vars (get-assignment-vars assignments)]
-	   [vals (get-assignment-vals assignments)]
+	   [vals (map syntax-expand (get-assignment-vals assignments))]
 	   [expanded-bodies (map syntax-expand bodies)]
 	  )
        (app-exp (cons (lambda-exp vars expanded-bodies) vals))
