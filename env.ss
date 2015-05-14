@@ -55,7 +55,7 @@
               )
                 (if 
                   (number? pos)
-                    (reference v (vector-ref v pos))
+                    (norm-ref v pos)
                     (apply-env-ref old-env sym fail)
                 )
             )
