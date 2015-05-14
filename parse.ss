@@ -24,7 +24,7 @@
 					(eopl:error 'parse-exp "define has the wrong number of parameters" datum) 
 					(define-exp
 						(cadr datum)
-						(parse-exp (cddr datum))
+						(parse-exp (caddr datum))
 					)
 			)
        ]

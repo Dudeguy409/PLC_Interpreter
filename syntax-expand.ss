@@ -65,6 +65,7 @@
 	   [letrec-exp (proc-names vals letrec-bodies) (syntax-expand-letrec proc-names vals letrec-bodies)
 
 	   ]
+	   [define-exp (sym exp)  (define-exp sym  (syntax-expand exp) ) ]
 	   [else exp]
      )
   )

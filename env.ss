@@ -128,7 +128,7 @@
 (define extend-global-env
   (lambda
     (syms vals)
-      (set! global-env (extend-env syms vars global-env))
+      (set! global-env (extend-env syms vals global-env))
   )
 )
 
