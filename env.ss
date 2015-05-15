@@ -61,7 +61,18 @@
             )
           ]
           [empty-env-record () (fail sym)]
-          [else (eopl:error 'apply-env-ref "You tried to use a set! in letrec, tool:~s" sym) ]
+          [recursively-extended-env-record (procnames v old-env)
+            (let 
+              (
+                [pos (list-find-position sym procnames)]
+              )
+                (if
+                  (number? pos)
+                    (norm-ref v pos)
+                    (apply-env-ref old-env sym fail)
+                )
+            )
+          ]
         )
     )
   )
