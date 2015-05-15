@@ -18,6 +18,9 @@
        [(let*-exp? datum) ; let*
 	(parse-let* datum)
        ]
+       [(eqv? (car datum) 'ref)
+       		(ref-exp (cadr datum))
+       ]
        [(eqv? (car datum) 'define)
 			(if
 				(not (equal? 3  (length datum)) )
