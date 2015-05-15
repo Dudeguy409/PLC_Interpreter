@@ -40,7 +40,7 @@
 		     	(apply-env-ref
 		     		env
 			    	sym
-			    	apply-global-env
+			    	apply-global-env-ref
 			   	)
 		     	(eval-exp exp env)
 		     )

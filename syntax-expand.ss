@@ -57,7 +57,7 @@
 		    (syntax-expand-and bodies)
 	   ]
 	   [or-exp (bodies)
-		   (syntax-expand-or bodies)
+		   (syntax-expand-or (map syntax-expand bodies) )
 	   ]
 	   [while-exp (test-exp bodies)
 		  (syntax-expand-while test-exp bodies)
@@ -190,14 +190,31 @@
 )
 
 (define syntax-expand-or
-  (lambda (bodies)
-    (if (null? (cdr bodies))
-	(syntax-expand (car bodies))
-	(if-else-exp (syntax-expand (car bodies))
-		     (car bodies)
-		     (syntax-expand-or (cdr bodies))
-	)
-    )
+  (lambda
+  	(bodies)
+    	(if
+    		(null? (cdr bodies))
+				(syntax-expand (car bodies))
+				(let-exp
+					(list
+						(assign
+							'swahili-random-mumbo-jumbo-var-name-unguessable-isnt-it-yes-i-reckon-so-plz-dont-use-this-var-name-or-bad-things-can-or-will-happen 
+							(syntax-expand (car bodies))
+						)
+					)
+					(list
+						(if-else-exp
+							(var-exp
+								'swahili-random-mumbo-jumbo-var-name-unguessable-isnt-it-yes-i-reckon-so-plz-dont-use-this-var-name-or-bad-things-can-or-will-happen
+							)
+		     				(var-exp
+								'swahili-random-mumbo-jumbo-var-name-unguessable-isnt-it-yes-i-reckon-so-plz-dont-use-this-var-name-or-bad-things-can-or-will-happen
+							)
+		     				(syntax-expand-or (cdr bodies))
+		     			)
+		     		)
+	  			)
+    	)
   )
 )
 

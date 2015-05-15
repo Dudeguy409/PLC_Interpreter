@@ -44,25 +44,26 @@
   ;     )
   ; )
 
-  (define apply-env-ref 
+  (define apply-env-ref
     (lambda
-      (env sym fail) 
-        (cases environment env 
+      (env sym fail)
+        (cases environment env
           [extended-env-record (syms v old-env)
             (let
               (
                 (pos (list-find-position sym syms))
               )
-                (if 
+                (if
                   (number? pos)
                     (norm-ref v pos)
                     (apply-env-ref old-env sym fail)
                 )
             )
           ]
-          [else (eopl:error 'apply-env-ref "You tried to use a set! in letrec, tool:~s" sym) ] 
-        ) 
-    ) 
+          [empty-env-record () (fail sym)]
+          [else (eopl:error 'apply-env-ref "You tried to use a set! in letrec, tool:~s" sym) ]
+        )
+    )
   )
 
 (define apply-env
@@ -135,5 +136,11 @@
 (define apply-global-env
   (lambda (id)
     (apply-env global-env id identity apply-env-error)
+  )
+)
+
+(define apply-global-env-ref
+  (lambda (id)
+    (apply-env-ref global-env id apply-env-error)
   )
 )
