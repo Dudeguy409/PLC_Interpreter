@@ -177,9 +177,10 @@
   )
 )
 
+;TODO
 (define list-find-position
   (lambda (sym los)
-    (list-index (lambda (xsym) (eqv? sym xsym)) los)
+    (list-index (lambda (xsym) (equal? sym (get-var-exp-sym xsym))) los)
   )
 )
 

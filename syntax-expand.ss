@@ -22,9 +22,7 @@
 	   					(letrec-exp
 	   						(list name)
 	   						(list (lambda-exp ids bodies))
-	   						; (list ids)
-	   						; (list bodies)
-	   						(list (app-exp (cons (var-exp name) args)))
+	   						(list (app-exp (cons name args)))
 	   					)
 	   				)
 	   		)
@@ -198,7 +196,7 @@
 				(let-exp
 					(list
 						(assign
-							'swahili-random-mumbo-jumbo-var-name-unguessable-isnt-it-yes-i-reckon-so-plz-dont-use-this-var-name-or-bad-things-can-or-will-happen 
+							(var-exp 'swahili-random-mumbo-jumbo-var-name-unguessable-isnt-it-yes-i-reckon-so-plz-dont-use-this-var-name-or-bad-things-can-or-will-happen )
 							(syntax-expand (car bodies))
 						)
 					)

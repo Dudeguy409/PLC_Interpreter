@@ -20,10 +20,10 @@
        ]
        [(eqv? (car datum) 'define)
 			(if
-				(not (equal? 3  (length datum)) ) 
+				(not (equal? 3  (length datum)) )
 					(eopl:error 'parse-exp "define has the wrong number of parameters" datum) 
 					(define-exp
-						(cadr datum)
+						(parse-exp (cadr datum))
 						(parse-exp (caddr datum))
 					)
 			)
@@ -87,7 +87,10 @@
 	   (eopl:error 'parse-exp "found a set! with non-symbol as the first argument: ~s" exp)
 	  ]
 	  [else
-	   (set!-exp (cadr exp) (parse-exp (caddr exp)))
+	   		(set!-exp 
+	   			(parse-exp (cadr exp)) 
+	   			(parse-exp (caddr exp))
+	   		)
 	  ]
     )
   )
@@ -177,8 +180,8 @@
 	  ]
 	  [else
 	   (let ([test-exps (map car (cddr exp))]
-		 [list-of-bodies (map 
-				  (lambda (x) (map parse-exp x)) 
+		 [list-of-bodies (map
+				  (lambda (x) (map parse-exp x))
 				  (map cdr (cddr exp))
 				 )
 		 ]
@@ -191,8 +194,9 @@
 	  ]
     )
   )
-)     
+)    
 
+;TODO
 (define literate-tests
   (lambda (test-exps)
     (if (else-exp? (car test-exps))
@@ -293,7 +297,7 @@
 	   (eopl:error 'parse-exp "found an improper list in the argument section of named let: ~s" exp)
 	  ]
 	  [(named-let-exp ; should be fine
-	  	(cadr exp)
+	  	(parse-exp (cadr exp))
 	    (map parse-assignment (named-let-pairs exp))
 	    (map parse-exp (named-let-bodies exp))
 	   )
@@ -320,7 +324,7 @@
 	   (eopl:error 'parse-exp "found a let assignment with a symbol not as the first parameter: ~s" exp)
 	  ]
 	  [else ; should be fine now
-	   (assign (assign-sym exp) (parse-exp (assign-exp exp)))
+	   (assign (parse-exp (assign-sym exp)) (parse-exp (assign-exp exp)))
 	  ]
     )
   )
@@ -336,10 +340,10 @@
       (eopl:error 'parse-exp "found lambda with no bodies: ~s" datum)
      ]
      [(symbol? (lambda-vars datum)) ; quick lambda
-      (lambda-exp-single (lambda-vars datum) (map parse-exp (lambda-bodies datum)))
+      (lambda-exp-single (parse-exp (lambda-vars datum)) (map parse-exp (lambda-bodies datum)))
      ]
      [((list-of symbol?) (lambda-vars datum)) ; formal lambda
-      (lambda-exp (lambda-vars datum) (map parse-exp (lambda-bodies datum)))
+      (lambda-exp (map parse-exp (lambda-vars datum)) (map parse-exp (lambda-bodies datum)))
      ]
      [else ; assume improper list lambda
       (cond [(not (check-improper-list (lambda-vars datum) symbol?)) ; bad improper list
@@ -347,8 +351,8 @@
 	    ]
 	    [else ; good list
 	     (lambda-exp-improper 
-	      (improper-list-start (lambda-vars datum))
-	      (improper-list-end (lambda-vars datum))
+	      (map parse-exp (improper-list-start (lambda-vars datum)))
+	      (parse-exp (improper-list-end (lambda-vars datum)))
 	      (map parse-exp (lambda-bodies datum))
 	     )
 	    ]

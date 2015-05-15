@@ -39,7 +39,7 @@
 	   		(set-ref!
 		     	(apply-env-ref
 		     		env
-			    	sym
+			    	(get-var-exp-sym sym)
 			    	apply-global-env-ref
 			   	)
 		     	(eval-exp exp env)

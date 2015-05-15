@@ -113,7 +113,7 @@
 (define make-init-env         ; for now, our initial global environment only contains 
   (lambda () 
     (extend-env            ; procedure names.  Recall that an environment associates
-     *prim-proc-names*   ;  a value (not an expression) with an identifier.
+     (map parse-exp *prim-proc-names*)   ;  a value (not an expression) with an identifier.
      (map prim-proc      
           *prim-proc-names*
      )
