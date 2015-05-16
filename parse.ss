@@ -345,7 +345,7 @@
      [(symbol? (lambda-vars datum)) ; quick lambda
       (lambda-exp-single (parse-exp (lambda-vars datum)) (map parse-exp (lambda-bodies datum)))
      ]
-     [((list-of symbol?) (lambda-vars datum)) ; formal lambda
+     [((list-of (lambda (x)(or (and (list? x) (equal? 'ref (car x) ) ) (symbol? x) ))) (lambda-vars datum)) ; formal lambda
       (lambda-exp (map parse-exp (lambda-vars datum)) (map parse-exp (lambda-bodies datum)))
      ]
      [else ; assume improper list lambda
