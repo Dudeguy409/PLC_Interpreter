@@ -76,8 +76,5 @@
 (define get-tuple-exp (lambda (tup) (cases assignment tup [assign (id exp) exp])))
 
 
-(define get-var-exp-sym (lambda (exp) (cases expression exp [var-exp (sym) sym][ref-exp (sym) sym]
-  [else (eopl:error 'get-var-exp-sym "found a non-var-exp that is being accessed for its symbol: ~s" exp)])))
-
-(define is-ref-exp? (lambda (exp) (cases expression exp [ref-exp (sym) #t]
-  [else #f])))
+(define get-var-exp-sym (lambda (sym) (cases expression sym [var-exp (sym) sym]
+  [else (eopl:error 'get-var-exp-sym "found a non-var-exp that is being accessed for its symbol: ~s" sym)])))

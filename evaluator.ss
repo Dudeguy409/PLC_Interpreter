@@ -131,9 +131,8 @@
 
 (define eval-var
   (lambda (sym env)
-    (apply-env env
+    (apply-env-ref env
 	       sym
-	       identity
 	       apply-global-env
     )
   )
