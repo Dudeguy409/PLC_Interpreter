@@ -56,6 +56,11 @@
     (else-exp expression?)
     (env environment?)
     (k continuation?)]
+  (rator-k (rands (list-of? expression?))
+          (env environment?)
+          (k continuation?))
+  (rands-k (proc-value scheme-value?)
+          (k continuation?)) 
 ; we will add other continuation variants.
 )
 

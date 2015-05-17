@@ -35,6 +35,12 @@
         (if val
             (eval-exp then-exp env k)
             (eval-exp else-exp env k))]
+      [rator-k (rands env k)
+        (eval-rands rands 
+                    env
+                    (rands-k val k))]
+      [rands-k (proc-value k)
+        (apply-proc proc-value val k)]
       )
   )
 )
