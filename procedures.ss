@@ -77,7 +77,7 @@
       car  cdr caar cddr cadr cdar caaar cdddr caadr cddar cadar cdadr cdaar caddr
       list null? assq eq? eqv? equal? atom? length list->vector list? pair? procedure? 
       vector->list vector make-vector vector-ref vector? number? symbol? set-car! 
-      set-cdr! vector-set! display newline map list-tail apply void quotient remainder odd? even? append
+      set-cdr! vector-set! display newline map list-tail apply void quotient remainder odd? even? append display newline
    )
 )
 
@@ -134,6 +134,8 @@
     [(procedure?) (apply proc-val? args)]
     [(vector->list) (apply vector->list args)]
     [(vector) (apply vector args)]
+    [(newline) (newline)]
+    [(display) (display (1st args))]
     [(make-vector) (apply make-vector args)]
     [(vector-ref) (apply vector-ref args)]
     [(vector?) (apply vector? args)]
