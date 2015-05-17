@@ -9,7 +9,7 @@
 (define apply-proc
   (lambda (proc-value args)
     (cases proc-val proc-value
-      [prim-proc (op) (apply-prim-proc op (map deref-if-necessary args )  )]
+      [prim-proc (op) (apply-prim-proc op args)]
       [closure (vars bodies env)
 	       (apply-closure vars args bodies env)
       ]

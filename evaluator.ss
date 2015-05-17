@@ -91,9 +91,9 @@
 
 (define eval-if-else
   (lambda (test-exp true-exp false-exp env)
-    (if (deref-if-necessary (eval-exp test-exp env))
-	(deref-if-necessary(eval-exp true-exp env))
-	(deref-if-necessary (eval-exp false-exp env))
+    (if (eval-exp test-exp env)
+	(eval-exp true-exp env)
+	(eval-exp false-exp env)
     )
   )
 )
@@ -111,7 +111,7 @@
 (define eval-lr-return-last
   (lambda (bodies env)
     (if (null? (cdr bodies))
-    	(let ([rslt (eval-exp (car bodies) env) ]) (deref-if-necessary rslt) )
+	(eval-exp (car bodies) env)
 	(let ([first-exp (eval-exp (car bodies) env)])
 	  (eval-lr-return-last (cdr bodies) env)
 	)
@@ -124,15 +124,16 @@
      (let ([op (eval-exp (1st exps) env)]
 	   [args (eval-args (cdr exps) env)]
 	  )
-       (apply-proc (deref-if-necessary op) args)
+       (apply-proc op args)
      )
   )
 )
 
 (define eval-var
   (lambda (sym env)
-    (apply-env-ref env
+    (apply-env env
 	       sym
+	       identity
 	       apply-global-env
     )
   )

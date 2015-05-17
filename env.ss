@@ -10,29 +10,11 @@
 
 (define extend-env
   (lambda (syms vals env)
-    (extended-env-record syms (list->vector (get-extend-env-vals syms vals)) env)))
-
-(define get-extend-env-vals
-  (lambda
-    (syms vals)
-      (if
-        (null? syms)
-          '()
-          (if
-            (is-ref-exp? (car syms))
-              (cons (car vals) (get-extend-env-vals (cdr syms) (cdr vals) ) )
-              (if (reference? (car vals))
-                (cons (deref (car vals)) (get-extend-env-vals (cdr syms) (cdr vals) ) )
-                (cons (car vals) (get-extend-env-vals (cdr syms) (cdr vals) ) )
-              )
-          )
-      )
-  )
-)
+    (extended-env-record syms (list->vector vals) env)))
 
 (define extend-env-recursively
   (lambda (proc-names vals old-env)
-    (recursively-extended-env-record proc-names (list->vector (get-extend-env-vals proc-names vals)) old-env)))
+    (recursively-extended-env-record proc-names (list->vector vals) old-env)))
 
 
 
@@ -99,6 +81,7 @@
   (lambda (env sym succeed fail) ; succeed and fail are procedures applied if the var is or isn't found, respectively.
     (cases environment env
       (empty-env-record () (fail sym))
+;TODO add vectors to all environments and then....
       (extended-env-record (syms v old-env)
 	     (let ((pos (list-find-position sym syms)))
       	  (if (number? pos)
@@ -172,5 +155,3 @@
     (apply-env-ref global-env id apply-env-error)
   )
 )
-
-(define deref-if-necessary (lambda (x) (if (reference? x) (deref x) x ) ) )
