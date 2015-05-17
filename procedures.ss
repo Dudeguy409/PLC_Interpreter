@@ -28,6 +28,17 @@
   )
 )
 
+(define apply-k
+  (lambda (k val)
+    (cases continuation k
+      [test-k (then-exp else-exp env k)
+        (if val
+            (eval-exp then-exp env k)
+            (eval-exp else-exp env k))]
+      )
+  )
+)
+
 (define apply-closure
   (lambda (vars args bodies env)
     (if (= (length vars) (length args))

@@ -50,6 +50,15 @@
     (env environment?)]
 )
 
+(define-datatype continuation continuation?
+  [test-k
+    (then-exp expression?)
+    (else-exp expression?)
+    (env environment?)
+    (k continuation?)]
+; we will add other continuation variants.
+)
+
 
 
 (define-datatype proc-val proc-val?
