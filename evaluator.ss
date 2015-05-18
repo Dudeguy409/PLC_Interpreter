@@ -115,6 +115,7 @@
 ;   )
 ; )
 
+;TODO put in CPS
 (define eval-lr-return-last
   (lambda (bodies env)
     (if (null? (cdr bodies))
@@ -123,16 +124,6 @@
 	  (eval-lr-return-last (cdr bodies) env)
 	)
     )
-  )
-)
-
-(define eval-app
-  (lambda (exps env k)
-     (let ([op (eval-exp (1st exps) env)]
-	   [args (eval-args (cdr exps) env)]
-	  )
-       (apply-proc op args)
-     )
   )
 )
 
@@ -147,10 +138,25 @@
   )
 )
 
+;TODO make cups
+(define eval-app
+  (lambda (exps env k)
+
+  	(apply-k k(eval-exp (car exps)  env  (eval-args-for-let-k (cdr exps) env )  ))
+
+   ;   (let ([op (eval-exp (1st exps) env)]
+	  ;  [args (eval-args (cdr exps) env)]
+	  ; )
+   ;     (apply-proc op args)
+   ;   )
+  )
+)
+
 ; evaluate the list of operands, putting results into a list
 
+;TODO make CPS
 (define eval-args
-  (lambda (args env)
+  (lambda (args env k)
     (map (lambda (exp) (eval-exp exp env)) args)
   )
 )

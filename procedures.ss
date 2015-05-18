@@ -48,6 +48,7 @@
       [rands-k (proc-value k)
         (apply-proc proc-value val k)]
       [identity-k () (identity val) ]
+      [eval-args-for-let-k (args env)  (eval-args args env (apply-proc-k val)) ]
       )
   )
 )
