@@ -36,6 +36,9 @@
 	 
 ;; environment type definitions
 
+
+
+
 ;vector used to have type checks : list-of always?  and list-of exp?
 (define-datatype environment environment?
   (empty-env-record)
@@ -52,17 +55,20 @@
 
 (define-datatype continuation continuation?
   [test-k
-    (then-exp expression?)
-    (else-exp expression?)
+    (then-exp exp?)
+    (else-exp exp?)
     (env environment?)
     (k continuation?)]
-  (rator-k (rands (list-of? expression?))
+  (rator-k (rands (list-of? exp?))
           (env environment?)
           (k continuation?))
   (rands-k (proc-value scheme-value?)
-          (k continuation?)) 
+          (k continuation?))
+  [identity-k]
 ; we will add other continuation variants.
 )
+
+(define id-k (identity-k) )
 
 
 

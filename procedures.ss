@@ -7,22 +7,28 @@
 ;  User-defined procedures will be added later.
 
 (define apply-proc
-  (lambda (proc-value args)
+  (lambda (proc-value args k)
     (cases proc-val proc-value
-      [prim-proc (op) (apply-prim-proc op args)]
+      ;TODO put into cps!!!!
+      [prim-proc (op) (apply-k k (apply-prim-proc op args))]
+       ;TODO put into cps!!!!
       [closure (vars bodies env)
-	       (apply-closure vars args bodies env)
+	       (apply-k k (apply-closure vars args bodies env))
       ]
+       ;TODO put into cps!!!!
       [closure-single (sym bodies env)
-		      (apply-closure-single sym args bodies env)
+		      (apply-k k (apply-closure-single sym args bodies env))
       ]
+       ;TODO put into cps!!!!
       [closure-improper (needed-syms extra-sym bodies env)
-			(apply-closure-improper needed-syms extra-sym args bodies env)
+			(apply-k k (apply-closure-improper needed-syms extra-sym args bodies env))
       ]
-      [else (error 'apply-proc
+      ;TODO do we need to do anything with the k here?
+      [else 
+        (error 'apply-proc
                    "Attempt to apply bad procedure: ~s" 
                     proc-value
-	    )
+	      )
       ]
     )
   )
@@ -41,6 +47,7 @@
                     (rands-k val k))]
       [rands-k (proc-value k)
         (apply-proc proc-value val k)]
+      [identity-k () (identity val) ]
       )
   )
 )
@@ -98,9 +105,10 @@
    )
 )
 
+;TODO ask claude if these are primitive procs
  ;TODO split this into prim and non-prim???  MAKE CPS
 (define (apply-prim-proc prim-proc args)
-  (case prim-proc 
+  (case prim-proc
     [(+) (apply + args)]
     [(-) (apply - args)]
     [(*) (apply * args)]

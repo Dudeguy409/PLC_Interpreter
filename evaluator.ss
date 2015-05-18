@@ -5,7 +5,7 @@
 (define top-level-eval
   (lambda (form)
     ; later we may add things that are not expressions.
-    (eval-exp form (empty-env) identity)
+    (eval-exp form (empty-env) id-k)
   )
 )
 
@@ -18,24 +18,27 @@
 	   ; [let-exp (assignments bodies)
 		  ;   (eval-let assignments bodies env)
 	   ; ]
+	   ;TODO BROKEN fix for cps
        [letrec-exp
             (proc-names vals letrec-body) (eval-lr-return-last letrec-body (extend-env-recursively proc-names vals env))
        ]
 	   [lambda-exp (syms bodies)
-		       (eval-lambda syms bodies env)
+		       (eval-lambda syms bodies env k)
 	   ]
 	   [lambda-exp-single (sym bodies)
-			      (eval-lambda-single sym bodies env)
+			      (eval-lambda-single sym bodies env k)
 	   ]
 	   [lambda-exp-improper (needed-syms extra-sym bodies)
-				(eval-lambda-improper needed-syms extra-sym bodies env)
+				(eval-lambda-improper needed-syms extra-sym bodies env k)
 	   ]
 	   [if-else-exp (test-exp true-exp false-exp)
-			(eval-if-else test-exp true-exp false-exp env)
+			(eval-if-else test-exp true-exp false-exp env k)
 	   ]
+	   ;TODO BROKEN fix for CPS
 	   [while-exp (test-exp bodies)
 		      (eval-while test-exp bodies env)
 	   ]
+	   ;TODO BROKEN fix for CPS
 	   [set!-exp (sym exp)
 	   		(set-ref!
 		     	(apply-env-ref
@@ -47,11 +50,13 @@
 		     )
 	   ]
 	   [app-exp (exps)
-		    (eval-app exps env)
+		    (eval-app exps env k)
 	   ]
+	   ;TODO BROKEN fix for CPS
 	   [define-exp (sym def-exp)
 	   		(extend-global-env (list sym) (list (eval-exp def-exp env) ) )
 	   ]
+	    ;TODO do we need to do anything with the k here?
 	   [else
 	    (eopl:error 'eval-exp "evaluator found unknown datatype: ~s" exp)
 	   ]
@@ -73,29 +78,30 @@
 )
 
 (define eval-lambda
-  (lambda (syms bodies env)
-    (closure syms bodies env)
+  (lambda (syms bodies env k)
+    (apply-k k (closure syms bodies env))
   )
 )
 
 (define eval-lambda-single
-  (lambda (sym bodies env)
-    (closure-single sym bodies env)
+  (lambda (sym bodies env k)
+    (apply-k k (closure-single sym bodies env))
   )
 )
 
 (define eval-lambda-improper
-  (lambda (needed-syms extra-sym bodies env)
-    (closure-improper needed-syms extra-sym bodies env)
+  (lambda (needed-syms extra-sym bodies env k)
+    (apply-k k (closure-improper needed-syms extra-sym bodies env))
   )
 )
 
 (define eval-if-else
-  (lambda (test-exp true-exp false-exp env)
-    (if (eval-exp test-exp env)
-	(eval-exp true-exp env)
-	(eval-exp false-exp env)
-    )
+  (lambda (test-exp true-exp false-exp env k)
+  		(eval-exp test-exp env (test-k true-exp false-exp env k))
+ ;    (if (eval-exp test-exp env)
+	; (eval-exp true-exp env)
+	; (eval-exp false-exp env)
+ ;    )
   )
 )
 
@@ -121,7 +127,7 @@
 )
 
 (define eval-app
-  (lambda (exps env)
+  (lambda (exps env k)
      (let ([op (eval-exp (1st exps) env)]
 	   [args (eval-args (cdr exps) env)]
 	  )
