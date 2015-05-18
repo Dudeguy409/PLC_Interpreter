@@ -39,11 +39,11 @@
 ;vector used to have type checks : list-of always?  and list-of exp?
 (define-datatype environment environment?
   (empty-env-record)
-  (extended-env-record
+  [extended-env-record
    (syms (list-of exp?))
    (v vector?)
    (env environment?)
-  )
+  ]
   [recursively-extended-env-record
     (proc-names (list-of exp?))
     (v vector?)
@@ -85,8 +85,10 @@
 
 (define-datatype reference reference? [norm-ref (v vector?) (i number?) ] )
 
+;TODO put in CPS???
 (define get-tuple-id (lambda (tup) (cases assignment tup [assign (id exp) id])))
 (define get-tuple-exp (lambda (tup) (cases assignment tup [assign (id exp) exp])))
 
-
+;TODO put in CPS???
 (define get-var-exp-sym (lambda (sym) (cases expression sym [var-exp (sym) sym][else (eopl:error 'get-var-exp-sym "found a non-var-exp that is being accessed for its symbol: ~s" sym)])))
+

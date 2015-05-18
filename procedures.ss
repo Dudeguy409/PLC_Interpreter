@@ -98,6 +98,7 @@
    )
 )
 
+ ;TODO split this into prim and non-prim???  MAKE CPS
 (define (apply-prim-proc prim-proc args)
   (case prim-proc 
     [(+) (apply + args)]

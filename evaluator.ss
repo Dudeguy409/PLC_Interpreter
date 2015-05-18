@@ -5,18 +5,19 @@
 (define top-level-eval
   (lambda (form)
     ; later we may add things that are not expressions.
-    (eval-exp form (empty-env))
+    (eval-exp form (empty-env) identity)
   )
 )
 
 (define eval-exp
-  (lambda (exp env)
+  (lambda (exp env k)
     (cases expression exp
-	   [lit-exp (exp) exp]
-	   [var-exp (exp) (eval-var exp env)]
-	   [let-exp (assignments bodies)
-		    (eval-let assignments bodies env)
-	   ]
+	   [lit-exp (exp) (apply-k k exp)]
+	   [var-exp (exp) (eval-var exp env k)]
+	   ;let should be syntax-expanded
+	   ; [let-exp (assignments bodies)
+		  ;   (eval-let assignments bodies env)
+	   ; ]
        [letrec-exp
             (proc-names vals letrec-body) (eval-lr-return-last letrec-body (extend-env-recursively proc-names vals env))
        ]
@@ -98,15 +99,15 @@
   )
 )
 
-(define eval-let
-  (lambda (assignments bodies env)
-    (let ([vars (get-assignment-vars assignments)]
-	  [vals (eval-args (get-assignment-vals assignments) env)]
- 	 )
-      (eval-lr-return-last bodies (extend-env vars vals env))
-    )
-  )
-)
+; (define eval-let
+;   (lambda (assignments bodies env)
+;     (let ([vars (get-assignment-vars assignments)]
+; 	  [vals (eval-args (get-assignment-vals assignments) env)]
+;  	 )
+;       (eval-lr-return-last bodies (extend-env vars vals env))
+;     )
+;   )
+; )
 
 (define eval-lr-return-last
   (lambda (bodies env)
@@ -130,18 +131,19 @@
 )
 
 (define eval-var
-  (lambda (sym env)
+  (lambda (sym env k)
     (apply-env env
 	       sym
-	       identity
+	       apply-k
 	       apply-global-env
+	       k
     )
   )
 )
 
 ; evaluate the list of operands, putting results into a list
 
-(define eval-args 
+(define eval-args
   (lambda (args env)
     (map (lambda (exp) (eval-exp exp env)) args)
   )

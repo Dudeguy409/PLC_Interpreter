@@ -12,6 +12,7 @@
 (define 2nd cadr)
 (define 3rd caddr)
 
+;TODO THESE ARE BAD AND SHOULD BE DELETED????
 (define assign-sym car)
 (define assign-exp cadr)
 
@@ -133,12 +134,17 @@
   )
 )
 
+;=========================================================================================================
+;=============   NEED TO BE IN CPS ==================================================
+
+;TODO THESE ARE BAD AND SHOULD BE DELETED????
 (define get-assignment-vars
   (lambda (assignments)
     (map 2nd assignments)
   )
 )
 
+;TODO THESE ARE BAD AND SHOULD BE DELETED????
 (define get-assignment-vals
   (lambda (assignments)
     (map 3rd assignments)
@@ -177,7 +183,6 @@
   )
 )
 
-;TODO
 (define list-find-position
   (lambda (sym los)
     (list-index (lambda (xsym) (equal? sym (get-var-exp-sym xsym))) los)
