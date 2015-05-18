@@ -62,8 +62,7 @@
   (lambda (vars args bodies env k)
     ;TODO put length in CPS????
     (if (= (length vars) (length args))
-      ;TODO put extend-env in CPS???
-	(eval-lr-return-last bodies (extend-env vars args env) k)
+	(eval-lr-return-last bodies (extended-env-record vars (list->vector args) env) k)
 	(eopl:error 'apply-proc "invalid number of arguments ~s" args)
     )
   )
@@ -75,7 +74,7 @@
 	  [args-list (list args)]
 	 )
       (eval-lr-return-last bodies
-			   (extend-env syms args-list env)
+			   (extended-env-record syms (list->vector args-list) env)
          k
       )
     )
@@ -87,9 +86,9 @@
     (let ([num-needed-syms (length needed-syms)])
       (if (<= num-needed-syms (length args))
 	  (let* ([splits (split-list args num-needed-syms)]
-		 [new-env (extend-env 
+		 [new-env (extended-env-record 
 			   (cons extra-sym needed-syms)
-			   (cons (cadr splits) (car splits))
+			   (list->vector (cons (cadr splits) (car splits)))
 			   env
 			  )
 		 ]
