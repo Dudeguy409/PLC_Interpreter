@@ -12,6 +12,8 @@
 (define 2nd cadr)
 (define 3rd caddr)
 
+(define scheme-value? (lambda (x) #t) )
+
 ;TODO THESE ARE BAD AND SHOULD BE DELETED????
 (define assign-sym car)
 (define assign-exp cadr)
@@ -134,8 +136,30 @@
   )
 )
 
+
+
+
 ;=========================================================================================================
 ;=============   NEED TO BE IN CPS ==================================================
+
+
+; any procedure that map-cps takes as its first argument must be in CPS form.
+(define map-cps
+  (lambda
+    (proc-cps ls k)
+      (cond
+        [(null? ls)
+          (apply-k k '())
+        ]
+        [else
+          (proc-cps
+            (car ls)
+              (map-k proc-cps (cdr ls)  k)
+          )
+        ]
+      )
+  )
+)
 
 ;TODO THESE ARE BAD AND SHOULD BE DELETED????
 (define get-assignment-vars

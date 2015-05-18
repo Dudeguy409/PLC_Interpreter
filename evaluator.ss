@@ -5,7 +5,7 @@
 (define top-level-eval
   (lambda (form)
     ; later we may add things that are not expressions.
-    (eval-exp form (empty-env) id-k)
+    (eval-exp form (empty-env) ls-k)
   )
 )
 
@@ -64,7 +64,7 @@
   )
 )
 
-
+;TODO BROKEN fix for CPS
 (define eval-while
   (lambda (test-exp bodies env)
     (if (eval-exp test-exp env)
@@ -115,14 +115,12 @@
 ;   )
 ; )
 
-;TODO put in CPS
+;TODO BROKEN fix for CPS
 (define eval-lr-return-last
-  (lambda (bodies env)
+  (lambda (bodies env k)
     (if (null? (cdr bodies))
-	(eval-exp (car bodies) env)
-	(let ([first-exp (eval-exp (car bodies) env)])
-	  (eval-lr-return-last (cdr bodies) env)
-	)
+	(eval-exp (car bodies) env k)
+	(eval-exp (car bodies) env (eval-lr-k (cdr bodies) env k ) )
     )
   )
 )
@@ -141,14 +139,7 @@
 ;TODO make cups
 (define eval-app
   (lambda (exps env k)
-
-  	(apply-k k(eval-exp (car exps)  env  (eval-args-for-let-k (cdr exps) env )  ))
-
-   ;   (let ([op (eval-exp (1st exps) env)]
-	  ;  [args (eval-args (cdr exps) env)]
-	  ; )
-   ;     (apply-proc op args)
-   ;   )
+  	 (eval-exp (car exps)  env  (eval-args-for-app-k (cdr exps) env k)  )
   )
 )
 
@@ -157,6 +148,6 @@
 ;TODO make CPS
 (define eval-args
   (lambda (args env k)
-    (map (lambda (exp) (eval-exp exp env)) args)
+    (map-cps (lambda (exp kont) (eval-exp exp env kont)) args  k  )
   )
 )

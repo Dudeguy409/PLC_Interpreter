@@ -65,10 +65,17 @@
   (rands-k (proc-value scheme-value?)
           (k continuation?))
   [identity-k]
+  [list-k]
+  [eval-args-for-app-k (args (list-of exp?) ) (env environment?) (orig-k continuation?) ]
+  [eval-lr-k (bodies (list-of exp?)) (env  environment?) (k continuation?)]
+  [map-k (proc-cps procedure?) (ls list?) (k continuation?)]
+  [map-combine-k (rslt scheme-value?) (kont continuation?) ]
+  [apply-proc-k (rslt proc-val?) (orig-k continuation?) ]
 ; we will add other continuation variants.
 )
 
 (define id-k (identity-k) )
+(define ls-k (list-k) )
 
 
 

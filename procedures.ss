@@ -10,18 +10,18 @@
   (lambda (proc-value args k)
     (cases proc-val proc-value
       ;TODO put into cps!!!!
-      [prim-proc (op) (apply-k k (apply-prim-proc op args))]
+      [prim-proc (op) (apply-prim-proc op args k)]
        ;TODO put into cps!!!!
       [closure (vars bodies env)
-	       (apply-k k (apply-closure vars args bodies env))
+	       (apply-closure vars args bodies env k)
       ]
        ;TODO put into cps!!!!
       [closure-single (sym bodies env)
-		      (apply-k k (apply-closure-single sym args bodies env))
+		      (apply-closure-single sym args bodies env k)
       ]
        ;TODO put into cps!!!!
       [closure-improper (needed-syms extra-sym bodies env)
-			(apply-k k (apply-closure-improper needed-syms extra-sym args bodies env))
+			(apply-closure-improper needed-syms extra-sym args bodies env k)
       ]
       ;TODO do we need to do anything with the k here?
       [else 
@@ -37,45 +37,53 @@
 (define apply-k
   (lambda (k val)
     (cases continuation k
-      [test-k (then-exp else-exp env k)
+      [test-k (then-exp else-exp env kont)
         (if val
-            (eval-exp then-exp env k)
-            (eval-exp else-exp env k))]
-      [rator-k (rands env k)
+            (eval-exp then-exp env kont)
+            (eval-exp else-exp env kont))]
+      [rator-k (rands env kont)
         (eval-rands rands 
                     env
-                    (rands-k val k))]
-      [rands-k (proc-value k)
-        (apply-proc proc-value val k)]
-      [identity-k () (identity val) ]
-      [eval-args-for-let-k (args env)  (eval-args args env (apply-proc-k val)) ]
+                    (rands-k val kont))]
+      [rands-k (proc-value kont)
+        (apply-proc proc-value val kont)]
+      [identity-k () val]
+      [list-k () (list val) ]
+      [eval-lr-k (bodies env kont) (eval-lr-return-last bodies env kont) ]
+      [eval-args-for-app-k (args env orig-k)  (eval-args args env (apply-proc-k val orig-k)  ) ]
+      [map-k (proc-cps ls kont) (map-cps proc-cps ls (map-combine-k val kont))]
+      [map-combine-k (rslt kont)  (apply-k kont (cons rslt val) ) ]
+      [apply-proc-k (rslt orig-k) (apply-proc rslt val orig-k) ]
       )
   )
 )
 
 (define apply-closure
-  (lambda (vars args bodies env)
+  (lambda (vars args bodies env k)
+    ;TODO put length in CPS????
     (if (= (length vars) (length args))
-	(eval-lr-return-last bodies (extend-env vars args env))
+      ;TODO put extend-env in CPS???
+	(eval-lr-return-last bodies (extend-env vars args env) k)
 	(eopl:error 'apply-proc "invalid number of arguments ~s" args)
     )
   )
 )
 
 (define apply-closure-single
-  (lambda (sym args bodies env)
+  (lambda (sym args bodies env k)
     (let ([syms (list sym)]
 	  [args-list (list args)]
 	 )
       (eval-lr-return-last bodies
 			   (extend-env syms args-list env)
+         k
       )
     )
   )
 )
 
 (define apply-closure-improper
-  (lambda (needed-syms extra-sym args bodies env)
+  (lambda (needed-syms extra-sym args bodies env k)
     (let ([num-needed-syms (length needed-syms)])
       (if (<= num-needed-syms (length args))
 	  (let* ([splits (split-list args num-needed-syms)]
@@ -108,8 +116,8 @@
 
 ;TODO ask claude if these are primitive procs
  ;TODO split this into prim and non-prim???  MAKE CPS
-(define (apply-prim-proc prim-proc args)
-  (case prim-proc
+(define (apply-prim-proc prim-proc args k)
+  (apply-k k (case prim-proc
     [(+) (apply + args)]
     [(-) (apply - args)]
     [(*) (apply * args)]
@@ -184,5 +192,5 @@
                  prim-op
 	  )
     ]
-  )
+  ))
 )

@@ -9,21 +9,21 @@
   (lambda ()
     (empty-env-record)))
 
-(define extend-env
-  (lambda 
-    (syms vals env k)
-      ;TODO make list->vector-cps and change this up
-      (apply-k k (extended-env-record syms (list->vector vals) env))
-  )
-)
+; (define extend-env
+;   (lambda 
+;     (syms vals env)
+;       ;TODO make list->vector-cps and get rid of this method
+;        (extended-env-record syms (list->vector vals) env)
+;   )
+; )
 
-(define extend-env-recursively
-  (lambda 
-    (proc-names vals old-env k)
-       ;TODO make list->vector-cps and change this up
-      (apply-k k (recursively-extended-env-record proc-names (list->vector vals) old-env))
-  )
-)
+; (define extend-env-recursively
+;   (lambda 
+;     (proc-names vals old-env k)
+;        ;TODO make list->vector-cps and change this up
+;       (apply-k k (recursively-extended-env-record proc-names (list->vector vals) old-env))
+;   )
+; )
 
 
 ;TODO BROKEN  put in CPS!!!
@@ -127,14 +127,12 @@
 ;TODO remove call to parser of put in cps???
 (define make-init-env         ; for now, our initial global environment only contains 
   (lambda () 
-    (extend-env            ; procedure names.  Recall that an environment associates
+    (extended-env-record           ; procedure names.  Recall that an environment associates
      (map parse-exp *prim-proc-names*)   ;  a value (not an expression) with an identifier.
-     (map prim-proc      
+     (list->vector (map prim-proc      
           *prim-proc-names*
-     )
+     ))
      (empty-env)
-     ;TODO fix????
-     id-k
     )
   )
 )
@@ -160,7 +158,7 @@
   (lambda
     (syms vals k)
     ;TODO put in CPS
-      (set! global-env (extend-env syms vals global-env k))
+      (set! global-env (extended-env-record syms (list->vector vals) global-env))
   )
 )
 
