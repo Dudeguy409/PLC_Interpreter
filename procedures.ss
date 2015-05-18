@@ -184,7 +184,7 @@
     [(newline) (apply newline args)]
     
     [(map) (map (lambda (x) (apply-proc (1st args) (list x))) (2nd args))]
-    [(apply) (apply-proc (1st args) (2nd args))]
+    [(apply) (apply-proc (1st args) (2nd args) id-k)]
     [(void) (void)]
     [else (error 'apply-prim-proc 
                  "Bad primitive procedure name: ~s" 
