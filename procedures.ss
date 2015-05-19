@@ -174,8 +174,6 @@
    )
 )
 
-;TODO ask claude if these are primitive procs
- ;TODO split this into prim and non-prim???  MAKE CPS????
 (define apply-prim-proc 
   (lambda 
     (prim-proc args k)

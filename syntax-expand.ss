@@ -150,8 +150,8 @@
 
 (define syntax-expand-let
   (lambda (assignments bodies)
-     (let ([vars (get-assignment-vars assignments)]
-	   [vals (map syntax-expand (get-assignment-vals assignments))]
+     (let ([vars (map get-tuple-id assignments)]
+	   [vals (map syntax-expand (map get-tuple-exp assignments))]
 	   [expanded-bodies (map syntax-expand bodies)]
 	  )
        (app-exp (cons (lambda-exp vars expanded-bodies) vals))
@@ -162,14 +162,14 @@
 (define syntax-expand-let*
   (lambda (assignments bodies)
     (let create-inner-lets ([assignments assignments]) 
-      (let ([first-var (list (cadar assignments))]
-	    [first-val (list (caddar assignments))]
+      (let ([first-var (list (get-tuple-id (car assignments)))]
+	    [first-val (list (get-tuple-exp (car assignments)))]
 	    [rest-assignments (cdr assignments)]
 	   )
 	(if (null? rest-assignments)
 	    (app-exp (cons (lambda-exp first-var (map syntax-expand bodies)) first-val))
 	    (app-exp (cons (lambda-exp first-var (list (create-inner-lets rest-assignments))) first-val))
-        )
+  )
       )
     )
   )

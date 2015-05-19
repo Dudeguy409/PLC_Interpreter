@@ -107,7 +107,10 @@
     (succeed procedure?)
     (fail procedure?)
     (old-env environment?)
-    (sym exp?)
+    (sym symbol?)
+  ]
+  [list-index-k
+    (k continuation?)
   ]
   [apply-env-recur-k
     (k continuation?)
@@ -115,7 +118,7 @@
     (succeed procedure?)
     (fail procedure?)
     (old-env environment?)
-    (sym exp?)
+    (sym symbol?)
   ]
 )
 
@@ -148,36 +151,14 @@
   [norm-ref (v vector?) (i number?)]
 )
 
-(define get-tuple-id 
-  (lambda 
-    (tup k) 
-      (cases assignment tup 
-        [assign (id exp) 
-          (apply-k k id)
-        ]
-      )
-  )
-)
-
-(define get-tuple-exp 
-  (lambda 
-    (tup k) 
-      (cases assignment tup 
-        [assign (id exp) 
-          (apply-k k exp)
-        ]
-      )
-  )
-)
-
-(define get-var-exp-sym 
-  (lambda 
-    (var k) 
-      (cases expression var 
-        [var-exp (sym) 
+(define get-var-exp-sym
+  (lambda
+    (var k)
+      (cases expression var
+        [var-exp (sym)
           (apply-k k sym)
         ]
-        [else 
+        [else
           (eopl:error 'get-var-exp-sym "found a non-var-exp that is being accessed for its symbol: ~s" var)
         ]
       )

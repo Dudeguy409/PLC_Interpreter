@@ -184,6 +184,28 @@
   )
 )
 
+(define get-tuple-id
+  (lambda
+    (tup)
+      (cases assignment tup
+        [assign (id exp)
+          id
+        ]
+      )
+  )
+)
+
+(define get-tuple-exp
+  (lambda
+    (tup)
+      (cases assignment tup
+        [assign (id exp)
+          exp
+        ]
+      )
+  )
+)
+
 ;=========================================================================================================
 ;=============   NEED TO BE IN CPS ==================================================
 
