@@ -151,17 +151,3 @@
   [norm-ref (v vector?) (i number?)]
 )
 
-(define get-var-exp-sym
-  (lambda
-    (var k)
-      (cases expression var
-        [var-exp (sym)
-          (apply-k k sym)
-        ]
-        [else
-          (eopl:error 'get-var-exp-sym "found a non-var-exp that is being accessed for its symbol: ~s" var)
-        ]
-      )
-  )
-)
-

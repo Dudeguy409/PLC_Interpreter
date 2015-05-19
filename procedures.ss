@@ -97,7 +97,7 @@
         [apply-env-k (kont v succeed fail old-env sym)
           (if 
             (number? val)
-              (succeed kont (vector-ref v pos)) 
+              (succeed kont (vector-ref v val)) 
               (apply-env old-env sym succeed fail kont) 
           )
         ]

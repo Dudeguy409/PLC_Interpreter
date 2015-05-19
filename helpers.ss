@@ -231,7 +231,7 @@
       (list-index-cps
         (lambda
           (xsym)
-            ;TODO make get-ver-exp-sym CPS
+            ;TODO make get-var-exp-sym CPS
             (equal? sym (get-var-exp-sym xsym))
         )
         los
@@ -248,7 +248,7 @@
           (apply-k k #f)
         ]
         [(pred (car ls)) 
-          (apply-k 0)
+          (apply-k k 0)
         ]
         [else
           (list-index-cps
@@ -296,5 +296,33 @@
           (split-list-k (car ls) k)
         )
     )
+  )
+)
+
+(define get-var-exp-sym-cps
+  (lambda
+    (var k)
+      (cases expression var
+        [var-exp (sym)
+          (apply-k k sym)
+        ]
+        [else
+          (eopl:error 'get-var-exp-sym-cps "found a non-var-exp that is being accessed for its symbol: ~s" var)
+        ]
+      )
+  )
+)
+
+(define get-var-exp-sym
+  (lambda
+    (var)
+      (cases expression var
+        [var-exp (sym)
+          sym
+        ]
+        [else
+          (eopl:error 'get-var-exp-sym "found a non-var-exp that is being accessed for its symbol: ~s" var)
+        ]
+      )
   )
 )
