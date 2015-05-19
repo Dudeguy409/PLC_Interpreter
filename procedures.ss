@@ -70,6 +70,7 @@
 
 (define apply-closure-single
   (lambda (sym args bodies env k)
+    ;TODO put lets in CPS????
     (let ([syms (list sym)]
 	  [args-list (list args)]
 	 )
@@ -83,6 +84,7 @@
 
 (define apply-closure-improper
   (lambda (needed-syms extra-sym args bodies env k)
+    ;TODO put into CPS
     (let ([num-needed-syms (length needed-syms)])
       (if (<= num-needed-syms (length args))
 	  (let* ([splits (split-list args num-needed-syms)]
@@ -93,7 +95,7 @@
 			  )
 		 ]
 		)
-	    (eval-lr-return-last bodies new-env)
+	    (eval-lr-return-last bodies new-env k)
 	  )
 	  (eopl:error 'apply proc "too few arguments ~s" args)
        )
