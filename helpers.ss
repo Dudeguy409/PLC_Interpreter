@@ -14,7 +14,6 @@
 
 (define scheme-value? (lambda (x) #t) )
 
-;TODO THESE ARE BAD AND SHOULD BE DELETED????
 (define assign-sym car)
 (define assign-exp cadr)
 
@@ -136,8 +135,54 @@
   )
 )
 
+(define improper-list-start
+  (lambda 
+    (lst)
+      (if 
+        (pair? lst)
+          (cons (car lst) (improper-list-start (cdr lst)))
+          '()
+      )
+  )
+)
 
+(define improper-list-end 
+  (lambda 
+    (lst)
+      (if 
+        (pair? lst)
+        (improper-list-end (cdr lst))
+        lst
+      )
+  )
+)
 
+(define check-improper-list
+  (lambda 
+    (sym-list proc?)
+      (if
+        (list? sym-list)
+          #f ; proper list
+          (let 
+            loop 
+              (
+                [sym-list sym-list]
+              )
+                (cond 
+                  [(proc? sym-list) 
+                    #t ; end of improper list
+                  ] 
+                  [(not (proc? (car sym-list))) 
+                    #f ; bad list
+                  ]
+                  [else 
+                    (loop (cdr sym-list))
+                  ]
+                )
+          )
+      )
+  )
+)
 
 ;=========================================================================================================
 ;=============   NEED TO BE IN CPS ==================================================
@@ -152,90 +197,82 @@
           (apply-k k '())
         ]
         [else
-          (proc-cps
-            (car ls)
-              (map-k proc-cps (cdr ls)  k)
-          )
+          (proc-cps (car ls) (map-k proc-cps (cdr ls)  k))
         ]
       )
   )
 )
 
-;TODO THESE ARE BAD AND SHOULD BE DELETED????
-(define get-assignment-vars
-  (lambda (assignments)
-    (map 2nd assignments)
-  )
-)
-
-;TODO THESE ARE BAD AND SHOULD BE DELETED????
-(define get-assignment-vals
-  (lambda (assignments)
-    (map 3rd assignments)
-  )
-)
-
-(define improper-list-start
-  (lambda (lst)
-    (if (pair? lst)
-	(cons (car lst) (improper-list-start (cdr lst)))
-	'()
-    )
-  )
-)
-
-(define improper-list-end
-  (lambda (lst)
-    (if (pair? lst)
-	(improper-list-end (cdr lst))
-	lst
-    )
-  )
-)
-
-(define check-improper-list
-  (lambda (sym-list proc?)
-    (if (list? sym-list)
-	#f ; proper list
-	(let loop ([sym-list sym-list])
-	  (cond [(proc? sym-list) #t] ; end of improper list
-		[(not (proc? (car sym-list))) #f]; bad list
-		[else (loop (cdr sym-list))]
-	  )
+(define list-find-position-cps
+  (lambda
+    (sym los k)
+      (list-index-cps
+        (lambda
+          (xsym)
+            ;TODO make get-ver-exp-sym CPS
+            (equal? sym (get-var-exp-sym xsym))
         )
-    )
-  )
-)
-
-(define list-find-position
-  (lambda (sym los)
-    (list-index (lambda (xsym) (equal? sym (get-var-exp-sym xsym))) los)
-  )
-)
-
-(define list-index
-  (lambda (pred ls)
-    (cond
-     ((null? ls) #f)
-     ((pred (car ls)) 0)
-     (else (let ((list-index-r (list-index pred (cdr ls))))
-	     (if (number? list-index-r)
-		 (+ 1 list-index-r)
-		 #f
-	     )
-	   )
-     )
-    )
-  )
-)
-
-(define split-list
-  (lambda (lis num)
-    (let split-list ([lis lis] [num num] [beginning '()])
-      (if (= num 0)
-	  (list (reverse beginning) lis)
-	  (split-list (cdr lis) (- num 1) (cons (car lis) beginning))
+        los
+        k
       )
+  )
+)
+
+(define list-index-cps
+  (lambda 
+    (pred ls k)
+      (cond
+        [(null? ls) 
+          (apply-k k #f)
+        ]
+        [(pred (car ls)) 
+          (apply-k 0)
+        ]
+        [else
+          (list-index-cps
+            pred
+            (cdr ls)
+            (list-index-k k)
+          )
+          ; (let 
+          ;   (
+          ;     [list-index-r (list-index pred (cdr ls))]
+          ;   )
+          ;     (if 
+          ;       (number? list-index-r)
+          ;         (+ 1 list-index-r)
+          ;         #f
+          ;     )
+          ; )
+        ]
+      )
+  )
+)
+
+; (define split-list
+;   (lambda 
+;     (lis num k)
+;       (let split-list 
+;         ([lis lis] [num num] [beginning '()])
+;           (if 
+;             (= num 0)
+;               (list (reverse beginning) lis)
+;               (split-list (cdr lis) (- num 1) (cons (car lis) beginning))
+;           )
+;       )
+;   )
+; )
+
+(define split-passed-in-args
+  (lambda (ls len k)
+    (if
+      (equal? len 0)
+        (apply-k k (list '() ls))
+        (split-passed-in-args 
+          (cdr ls)
+          (- len 1)
+          (split-list-k (car ls) k)
+        )
     )
   )
 )

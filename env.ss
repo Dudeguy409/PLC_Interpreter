@@ -4,34 +4,13 @@
 
 ; Environment definitions for CSSE 304 Scheme interpreter.  Based on EoPL section 2.3
 
-;TODO apply-k to this result and put it in cps???? Useless, but whatever
-(define empty-env
-  (lambda ()
-    (empty-env-record)))
-
-; (define extend-env
-;   (lambda 
-;     (syms vals env)
-;       ;TODO make list->vector-cps and get rid of this method
-;        (extended-env-record syms (list->vector vals) env)
-;   )
-; )
-
-; (define extend-env-recursively
-;   (lambda 
-;     (proc-names vals old-env k)
-;        ;TODO make list->vector-cps and change this up
-;       (apply-k k (recursively-extended-env-record proc-names (list->vector vals) old-env))
-;   )
-; )
-
-
-;TODO BROKEN  put in CPS!!!
   (define deref
     (lambda
-      (ref) 
+      (ref k) 
         (cases reference ref  
-          [norm-ref (v i)  (vector-ref v i) ] 
+          [norm-ref (v i)  
+            (apply-k k (vector-ref v i)) 
+          ] 
         )  
     ) 
   )
@@ -45,14 +24,6 @@
       )
     )
   )
-
-  ; (define apply-env 
-  ; (lambda 
-  ;   (env sym succeed fail) 
-  ;     (deref 
-  ;       (apply-env-ref env sym)
-  ;     )
-  ; )
 
 ;TODO BROKEN  put in CPS!!!
   (define apply-env-ref
@@ -124,20 +95,29 @@
   )
 )
 
-;TODO remove call to parser of put in cps???
+(define make-prim-proc-var-exp-cps
+  (lambda
+    (proc-sym k)
+      (apply-k k (var-exp proc-sym))
+  )
+)
+
+;TODO fix
 (define make-init-env         ; for now, our initial global environment only contains 
-  (lambda () 
+  (lambda ()
     (extended-env-record           ; procedure names.  Recall that an environment associates
-     (map parse-exp *prim-proc-names*)   ;  a value (not an expression) with an identifier.
-     (list->vector (map prim-proc      
-          *prim-proc-names*
-     ))
-     (empty-env)
+    (map-cps make-prim-proc-var-exp-cps *prim-proc-names* id-k)   ;  a value (not an expression) with an identifier.
+      (list->vector
+        (map prim-proc *prim-proc-names*)
+      )
+      (empty-env)
     )
   )
 )
 
 (define global-env (make-init-env) )
+
+
 
 ;TODO put in CPS
 (define reset-global-env 
@@ -149,7 +129,6 @@
 
 (define apply-env-error
   (lambda (id k)
-     ;TODO put in CPS???? This is an escape procedure so apply-k would be redundant???
     (eopl:error 'apply-env "variable not found in enviroment: ~s" id)
   )
 )
@@ -168,9 +147,8 @@
   )
 )
 
-;TODO BROKEN  put in CPS!!!
 (define apply-global-env-ref
-  (lambda (id)
-    (apply-env-ref global-env id apply-env-error)
+  (lambda (id k)
+    (apply-env-ref global-env id apply-env-error k)
   )
 )
