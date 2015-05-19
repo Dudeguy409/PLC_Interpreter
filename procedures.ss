@@ -101,12 +101,12 @@
               (apply-env old-env sym succeed fail kont) 
           )
         ]
-        [apply-env-recur-k (kont v succeed fail old-env sym)
+        [apply-env-recur-k (kont v succeed fail old-env sym new-env)
           (if
             (number? val)
               (cases expression (vector-ref v val)
-                [lambda-exp (syms bodies) (succeed kont (closure syms bodies env))]
-                [lambda-exp-improper (needed-syms extra-sym bodies) (succeed kont (closure-improper needed-syms extra-sym bodies env)) ]
+                [lambda-exp (syms bodies) (succeed kont (closure syms bodies new-env))]
+                [lambda-exp-improper (needed-syms extra-sym bodies) (succeed kont (closure-improper needed-syms extra-sym bodies new-env)) ]
                 [else (eopl:error 'apply-env "tried to store something besides a lambda in letrec:~s" rec-exp)]
               )
               (apply-env old-env sym succeed fail kont)
@@ -146,7 +146,7 @@
     (needed-syms extra-sym args bodies env k)
       (if
         (<= (length needed-syms) (length args))
-          (split-list
+          (split-passed-in-args
             args
             (length needed-syms)
             (extend-improper-closure-k

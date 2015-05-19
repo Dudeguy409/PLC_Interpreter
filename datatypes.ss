@@ -119,6 +119,7 @@
     (fail procedure?)
     (old-env environment?)
     (sym symbol?)
+    (new-env environment?)
   ]
 )
 

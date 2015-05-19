@@ -69,7 +69,7 @@
         (list-find-position-cps sym syms (apply-env-k k v succeed fail old-env sym) )
       ]
       [recursively-extended-env-record (procnames v old-env)
-        (list-find-position-cps sym procnames (apply-env-recur-k k v succeed fail old-env sym) )
+        (list-find-position-cps sym procnames (apply-env-recur-k k v succeed fail old-env sym env) )
       ]
     )
   )
