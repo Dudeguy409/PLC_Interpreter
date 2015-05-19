@@ -85,14 +85,32 @@
               (apply-k kont #f)
           )
         ]
-        [split-list-k (value kont) 
-          (apply-k 
-            kont 
-            (list 
-              (cons value (car val)) 
-              (cadr val) 
-            )  
-          )  
+        [split-list-k (value kont)
+          (apply-k
+            kont
+            (list
+              (cons value (car val))
+              (cadr val)
+            )
+          )
+        ]
+        [apply-env-k (kont v succeed fail old-env sym)
+          (if 
+            (number? val)
+              (succeed kont (vector-ref v pos)) 
+              (apply-env old-env sym succeed fail kont) 
+          )
+        ]
+        [apply-env-recur-k (kont v succeed fail old-env sym)
+          (if
+            (number? val)
+              (cases expression (vector-ref v val)
+                [lambda-exp (syms bodies) (succeed kont (closure syms bodies env))]
+                [lambda-exp-improper (needed-syms extra-sym bodies) (succeed kont (closure-improper needed-syms extra-sym bodies env)) ]
+                [else (eopl:error 'apply-env "tried to store something besides a lambda in letrec:~s" rec-exp)]
+              )
+              (apply-env old-env sym succeed fail kont)
+          )
         ]
       )
   )

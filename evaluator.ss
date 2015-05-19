@@ -201,7 +201,7 @@
       (apply-env 
         env 
         sym 
-        apply-k 
+        apply-k
         apply-global-env 
         k
       )

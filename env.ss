@@ -65,31 +65,36 @@
       [empty-env-record () (fail sym k)]
       ;TODO make cps
       [extended-env-record (syms v old-env)
-	     (let ((pos (list-find-position sym syms)))
-      	  (if
-            (number? pos)
-	           (succeed k (vector-ref v pos))
-	           (apply-env old-env sym succeed fail k))
-       )
+	     ; (let ((pos (list-find-position sym syms)))
+      ; 	  (if
+      ;       (number? pos)
+	     ;       (succeed k (vector-ref v pos))
+	     ;       (apply-env old-env sym succeed fail k))
+      ;  )
+
+        (list-find-position-cps sym syms (apply-env-k k v succeed fail old-env sym) )
       ]
       ;TODO BROKEN  put in CPS!!!
       [recursively-extended-env-record (procnames v old-env)
-        (let ([pos (list-find-position sym procnames)])
-          (if 
-            (number? pos)
-              (let  
-                (
-                  [rec-exp (vector-ref v pos)]
-                ) 
-                  (cases expression rec-exp 
-                    [lambda-exp (syms bodies) (closure syms bodies env)]
-                    [lambda-exp-improper (needed-syms extra-sym bodies) (closure-improper needed-syms extra-sym bodies env) ]
-                    [else (eopl:error 'apply-env "tried to store something besides a lambda in letrec:~s" rec-exp)]
-                  ) 
-              )
-              (apply-env old-env sym succeed fail)
-          )
-        )
+        ; (let ([pos (list-find-position sym procnames)])
+        ;   (if 
+        ;     (number? pos)
+        ;       (let  
+        ;         (
+        ;           [rec-exp (vector-ref v pos)]
+        ;         ) 
+        ;           (cases expression rec-exp 
+        ;             [lambda-exp (syms bodies) (closure syms bodies env)]
+        ;             [lambda-exp-improper (needed-syms extra-sym bodies) (closure-improper needed-syms extra-sym bodies env) ]
+        ;             [else (eopl:error 'apply-env "tried to store something besides a lambda in letrec:~s" rec-exp)]
+        ;           ) 
+        ;       )
+        ;       (apply-env old-env sym succeed fail)
+        ;   )
+        ; )
+
+        (list-find-position-cps sym procnames (apply-env-recur-k k v succeed fail old-env sym) )
+
       ]
     )
   )
@@ -102,7 +107,7 @@
   )
 )
 
-;TODO fix
+;TODO fix???  This shouldn't need to be in cps because it can't be called in eval-exp or anything else
 (define make-init-env         ; for now, our initial global environment only contains 
   (lambda ()
     (extended-env-record           ; procedure names.  Recall that an environment associates

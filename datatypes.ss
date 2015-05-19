@@ -101,6 +101,22 @@
     (val scheme-value?) 
     (k continuation?) 
   ]
+  [apply-env-k
+    (k continuation?)
+    (v vector?)
+    (succeed procedure?)
+    (fail procedure?)
+    (old-env environment?)
+    (sym exp?)
+  ]
+  [apply-env-recur-k
+    (k continuation?)
+    (v vector?)
+    (succeed procedure?)
+    (fail procedure?)
+    (old-env environment?)
+    (sym exp?)
+  ]
 )
 
 (define id-k (identity-k) )
