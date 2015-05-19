@@ -20,7 +20,7 @@
 	   ; ]
 	   ;TODO BROKEN fix for cps
        [letrec-exp
-            (proc-names vals letrec-body) (eval-lr-return-last letrec-body (extend-env-recursively proc-names vals env))
+            (proc-names vals letrec-bodies) (eval-lr-return-last letrec-bodies (recursively-extended-env-record proc-names (list->vector vals) env) k )
        ]
 	   [lambda-exp (syms bodies)
 		       (eval-lambda syms bodies env k)
@@ -54,7 +54,7 @@
 	   ]
 	   ;TODO BROKEN fix for CPS
 	   [define-exp (sym def-exp)
-	   		(extend-global-env (list sym) (list (eval-exp def-exp env) ) )
+	   		(extend-global-env (list sym) (list (eval-exp def-exp env) ) k)
 	   ]
 	    ;TODO do we need to do anything with the k here?
 	   [else
