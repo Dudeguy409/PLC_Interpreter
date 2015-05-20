@@ -79,27 +79,27 @@
     (env environment?)
     (k continuation?)
   ]
-  [eval-lr-k 
-    (bodies (list-of exp?)) 
-    (env  environment?) 
+  [eval-lr-k
+    (bodies (list-of exp?))
+    (env  environment?)
     (k continuation?)
   ]
-  [map-k 
-    (proc-cps procedure?) 
-    (ls list?) 
+  [map-k
+    (proc-cps procedure?)
+    (ls list?)
     (k continuation?)
   ]
-  [map-combine-k 
-    (rslt scheme-value?) 
-    (kont continuation?) 
+  [map-combine-k
+    (rslt scheme-value?)
+    (kont continuation?)
   ]
-  [apply-proc-k 
-    (rslt proc-val?) 
-    (orig-k continuation?) 
+  [apply-proc-k
+    (rslt proc-val?)
+    (orig-k continuation?)
   ]
-  [split-list-k 
-    (val scheme-value?) 
-    (k continuation?) 
+  [split-list-k
+    (val scheme-value?)
+    (k continuation?)
   ]
   [apply-env-k
     (k continuation?)

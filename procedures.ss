@@ -7,7 +7,7 @@
 ;  User-defined procedures will be added later.
 
 (define apply-proc
-  (lambda 
+  (lambda
     (proc-value args k)
       (cases proc-val proc-value
         [prim-proc (op) 
@@ -174,11 +174,21 @@
    )
 )
 
-(define apply-prim-proc 
+(define apply-prim-proc
+  (lambda
+    (prim-proc args k)
+      (case prim-proc
+        [(map) (map-cps (lambda (x kont) (apply-proc (1st args) (list x) kont)) (2nd args) k)]
+        [else (apply-real-prim-proc prim-proc args k)]
+      )
+  )
+)
+
+(define apply-real-prim-proc 
   (lambda 
     (prim-proc args k)
       (apply-k 
-        k 
+        k
         (case prim-proc
           [(+) (apply + args)]
           [(-) (apply - args)]
@@ -240,7 +250,7 @@
           [(vector-set!) (apply vector-set! args)]
           [(display) (apply display args)]
           [(newline) (apply newline args)]
-          [(map) (map (lambda (x) (apply-proc (1st args) (list x))) (2nd args))]
+          ;TODO put in the pre-filter-cps method
           [(apply) (apply-proc (1st args) (2nd args) id-k)]
           [(void) (void)]
           [else (error 'apply-prim-proc "Bad primitive procedure name: ~s" prim-op)]

@@ -193,6 +193,7 @@
     	(if
     		(null? (cdr bodies))
 				(syntax-expand (car bodies))
+        (syntax-expand 
 				(let-exp
 					(list
 						(assign
@@ -212,7 +213,7 @@
 		     			)
 		     		)
 	  			)
-    	)
+    	))
   )
 )
 
