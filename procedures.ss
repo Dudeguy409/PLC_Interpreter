@@ -50,6 +50,12 @@
         [eval-lr-k (bodies env kont) 
           (eval-lr-return-last bodies env kont) 
         ]
+        [set-ref!-k (sym env kont)
+          (apply-env-ref env sym apply-global-env-ref (second-set-ref!-k kont val) )
+        ]
+        [second-set-ref!-k (kont rslt)
+          (set-ref! val rslt kont)
+        ]
         [extend-global-env-k (syms kont)
           (extend-global-env syms (list val) kont)
         ]
@@ -104,6 +110,13 @@
               (apply-env old-env sym succeed fail kont) 
           )
         ]
+        [apply-env-ref-k (kont v fail old-env sym)
+          (if
+            (number? val)
+              (apply-k kont (norm-ref v val))
+              (apply-env-ref old-env sym fail kont)
+          )
+        ]
         [apply-env-recur-k (kont v succeed fail old-env sym new-env)
           (if
             (number? val)
@@ -113,6 +126,13 @@
                 [else (eopl:error 'apply-env "tried to store something besides a lambda in letrec:~s" rec-exp)]
               )
               (apply-env old-env sym succeed fail kont)
+          )
+        ]
+        [apply-env-recur-ref-k (kont v fail old-env sym new-env)
+          (if
+            (number? val)
+              (apply-k kont (norm-ref v val))
+              (apply-env-ref old-env sym fail kont)
           )
         ]
       )

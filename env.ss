@@ -15,45 +15,26 @@
     ) 
   )
 
-;TODO BROKEN  put in CPS!!!
+    ;TODO this will call apply-k with void args!!!  Is this a problem?
   (define set-ref!
     (lambda
-      (ref val)
+      (ref val k)
       (cases reference ref
-        [norm-ref (v i)  (vector-set! v i val) ]
+        [norm-ref (v i)  (apply-k k (vector-set! v i val)) ]
       )
     )
   )
 
-;TODO BROKEN  put in CPS!!!
   (define apply-env-ref
     (lambda
-      (env sym fail)
+      (env sym fail k)
         (cases environment env
           [extended-env-record (syms v old-env)
-            (let
-              (
-                (pos (list-find-position sym syms))
-              )
-                (if
-                  (number? pos)
-                    (norm-ref v pos)
-                    (apply-env-ref old-env sym fail)
-                )
-            )
+            (list-find-position-cps sym syms (apply-env-ref-k k v fail old-env sym) )
           ]
           [empty-env-record () (fail sym)]
           [recursively-extended-env-record (procnames v old-env)
-            (let 
-              (
-                [pos (list-find-position sym procnames)]
-              )
-                (if
-                  (number? pos)
-                    (norm-ref v pos)
-                    (apply-env-ref old-env sym fail)
-                )
-            )
+            (list-find-position-cps sym procnames (apply-env-recur-ref-k k v fail old-env sym env) )
           ]
         )
     )
@@ -96,9 +77,6 @@
 
 (define global-env (make-init-env) )
 
-
-
-;TODO put in CPS
 (define reset-global-env 
   (lambda 
     () 
@@ -115,8 +93,8 @@
 (define extend-global-env
   (lambda
     (syms vals k)
-    ;TODO put in CPS
-      (set! global-env (extended-env-record syms (list->vector vals) global-env))
+    ;TODO this will call apply-k with void args!!!  Is this a problem?
+      (apply-k k (set! global-env (extended-env-record syms (list->vector vals) global-env)))
   )
 )
 

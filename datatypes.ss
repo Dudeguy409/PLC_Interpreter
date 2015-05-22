@@ -109,6 +109,13 @@
     (old-env environment?)
     (sym symbol?)
   ]
+  [apply-env-ref-k
+    (k continuation?)
+    (v vector?)
+    (fail procedure?)
+    (old-env environment?)
+    (sym symbol?)
+  ]
   [list-index-k
     (k continuation?)
   ]
@@ -120,6 +127,23 @@
     (old-env environment?)
     (sym symbol?)
     (new-env environment?)
+  ]
+  [apply-env-recur-ref-k
+    (k continuation?)
+    (v vector?)
+    (fail procedure?)
+    (old-env environment?)
+    (sym symbol?)
+    (new-env environment?)
+  ]
+  [set-ref!-k
+    (sym symbol?)
+    (env environment?)
+    (k continuation?)
+  ]
+  [second-set-ref!-k
+    (k continuation?)
+    (rslt scheme-value?)
   ]
 )
 

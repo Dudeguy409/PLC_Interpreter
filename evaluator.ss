@@ -67,16 +67,9 @@
       [while-exp (test-exp bodies)
         (eval-while test-exp bodies env)
       ]
-      ;TODO BROKEN fix for CPS
       [set!-exp (sym exp)
-      	(set-ref!
-         	(apply-env-ref
-         		env
-          	(get-var-exp-sym sym)
-          	apply-global-env-ref
-         	)
-         	(eval-exp exp env)
-        )
+        (eval-exp exp env (set-ref!-k (get-var-exp-sym sym) env k) )
+        
       ]
       [app-exp (exps)
         (eval-app exps env k)
