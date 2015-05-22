@@ -22,6 +22,9 @@
         [closure-improper (needed-syms extra-sym bodies env)
           (apply-closure-improper needed-syms extra-sym args bodies env k)
         ]
+        [continuation-proc (kont)
+          (apply-k kont (car args))
+        ]
         [else 
           (error 'apply-proc "Attempt to apply bad procedure: ~s" proc-value)
         ]
@@ -169,7 +172,7 @@
   '(+ - * / add1 sub1 zero? not = < > <= >= cons
       car  cdr caar cddr cadr cdar caaar cdddr caadr cddar cadar cdadr cdaar caddr
       list null? assq eq? eqv? equal? atom? length list->vector list? pair? procedure? 
-      vector->list vector make-vector vector-ref vector? number? symbol? set-car! 
+      vector->list vector call/cc make-vector vector-ref vector? number? symbol? set-car! 
       set-cdr! vector-set! display newline map list-tail apply void quotient remainder odd? even? append display newline
    )
 )
@@ -179,6 +182,7 @@
     (prim-proc args k)
       (case prim-proc
         [(map) (map-cps (lambda (x kont) (apply-proc (1st args) (list x) kont)) (2nd args) k)]
+        [(call/cc) (apply-proc (car args) (list (continuation-proc k)) k)]
         [else (apply-real-prim-proc prim-proc args k)]
       )
   )

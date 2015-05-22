@@ -146,6 +146,9 @@
     (bodies (list-of exp?))
     (env environment?)
   ]
+  [continuation-proc
+    (k continuation?)
+  ]
 )
 
 (define-datatype reference reference?
