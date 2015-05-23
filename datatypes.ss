@@ -145,6 +145,7 @@
     (k continuation?)
     (rslt scheme-value?)
   ]
+  [exit-list-k]
 )
 
 (define id-k (identity-k) )

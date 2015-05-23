@@ -135,6 +135,7 @@
               (apply-env-ref old-env sym fail kont)
           )
         ]
+        [exit-list-k () val]
       )
   )
 )
@@ -192,7 +193,7 @@
   '(+ - * / add1 sub1 zero? not = < > <= >= cons
       car  cdr caar cddr cadr cdar caaar cdddr caadr cddar cadar cdadr cdaar caddr
       list null? assq eq? eqv? equal? atom? length list->vector list? pair? procedure? 
-      vector->list vector call/cc make-vector vector-ref vector? number? symbol? set-car! 
+      vector->list vector call/cc make-vector vector-ref vector? number? symbol? set-car! exit-list
       set-cdr! vector-set! display newline map list-tail apply void quotient remainder odd? even? append display newline
    )
 )
@@ -204,6 +205,7 @@
         [(map) (map-cps (lambda (x kont) (apply-proc (1st args) (list x) kont)) (2nd args) k)]
         [(call/cc) (apply-proc (car args) (list (continuation-proc k)) k)]
         [(apply) (apply-proc (car args) (cadr args) k)]
+        [(exit-list) (apply-k (exit-list-k) args)]
         [else (apply-real-prim-proc prim-proc args k)]
       )
   )
