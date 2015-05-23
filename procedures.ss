@@ -203,6 +203,7 @@
       (case prim-proc
         [(map) (map-cps (lambda (x kont) (apply-proc (1st args) (list x) kont)) (2nd args) k)]
         [(call/cc) (apply-proc (car args) (list (continuation-proc k)) k)]
+        [(apply) (apply-proc (car args) (cadr args) k)]
         [else (apply-real-prim-proc prim-proc args k)]
       )
   )
@@ -275,7 +276,6 @@
           [(display) (apply display args)]
           [(newline) (apply newline args)]
           ;TODO put in the pre-filter-cps method
-          [(apply) (apply-proc (1st args) (2nd args) id-k)]
           [(void) (void)]
           [else (error 'apply-prim-proc "Bad primitive procedure name: ~s" prim-op)]
         )

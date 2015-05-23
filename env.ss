@@ -32,7 +32,7 @@
           [extended-env-record (syms v old-env)
             (list-find-position-cps sym syms (apply-env-ref-k k v fail old-env sym) )
           ]
-          [empty-env-record () (fail sym)]
+          [empty-env-record () (fail sym k)]
           [recursively-extended-env-record (procnames v old-env)
             (list-find-position-cps sym procnames (apply-env-recur-ref-k k v fail old-env sym env) )
           ]
